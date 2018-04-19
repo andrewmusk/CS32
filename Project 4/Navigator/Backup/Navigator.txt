@@ -1,0 +1,152 @@
+#include "provided.h"
+#include <string>
+#include <vector>
+#include <queue>
+#include "MyMap.h"
+using namespace std;
+
+class NavigatorImpl
+{
+public:
+    NavigatorImpl();
+    ~NavigatorImpl();
+    bool loadMapData(string mapFile);
+    NavResult navigate(string start, string end, vector<NavSegment>& directions) const;
+private:
+    AttractionMapper m_attrMap;
+    SegmentMapper m_segMap;
+};
+
+NavigatorImpl::NavigatorImpl()
+{
+}
+
+NavigatorImpl::~NavigatorImpl()
+{
+}
+
+bool NavigatorImpl::loadMapData(string mapFile)
+{
+    MapLoader ml;
+    if(!ml.load(mapFile))
+    {
+        return false;
+    }
+    m_attrMap.init(ml);
+    m_segMap.init(ml);  
+    
+    return false;  // This compiles, but may not be correct
+}
+
+NavResult NavigatorImpl::navigate(string start, string end, vector<NavSegment> &directions) const
+{
+    MyMap<StreetSegment,StreetSegment> routeLinks;
+    queue<StreetSegment> routes;
+    GeoCoord c_start;
+    GeoCoord c_end;
+    
+    m_attrMap.getGeoCoord(start, c_start);
+    m_attrMap.getGeoCoord(end, c_end);
+    
+    const vector<StreetSegment>  startStreet = m_segMap.getSegments(c_start);
+    vector<StreetSegment> endStreet = m_segMap.getSegments(c_end);
+    
+    if(startStreet.size()==0)
+    {
+        return NAV_BAD_SOURCE;
+    }
+    if(endStreet.size()==0)
+    {
+        return NAV_BAD_DESTINATION;
+    }
+    for(int i =0 ; i < startStreet.size(); i++)
+    {
+        routes.push(startStreet[i]);
+        routeLinks.associate(startStreet[i], startStreet[i]);
+    }
+    
+    bool found = false;
+    
+    while(!routes.empty() && !found)
+    {
+        if(routes.empty())
+        {
+            return NAV_NO_ROUTE;
+        }
+        
+        StreetSegment cur = routes.front();
+        routes.pop();
+        
+        for(int i = 0; i < endStreet.size() ; i++)
+        {
+            if(cur.segment.end.latitudeText == endStreet[i].segment.end.latitudeText && cur.segment.end.longitudeText == cur.segment.end.longitudeText)
+            {
+                found = true;
+                continue;
+            }
+        }
+       
+        
+        vector<StreetSegment>  curStreet = m_segMap.getSegments(cur.segment.start);
+        vector<StreetSegment>  curStreet2 = m_segMap.getSegments(cur.segment.end);
+        
+        for(int i = 0; i < curStreet.size(); i++)
+        {
+            if(routeLinks.find(curStreet[i]) == nullptr)
+            {
+                routes.push(curStreet[i]);
+                routeLinks.associate(curStreet[i].segment.start, c_start);
+            }
+            
+        }
+        
+        for(int i = 0; i < curStreet2.size(); i++)
+        {
+            if(routeLinks.find(curStreet2[i]) == nullptr)
+            {
+                routes.push(curStreet2[i]);
+                routeLinks.associate(curStreet2[i].segment.end, c_start);
+            }
+        }
+    }
+    
+    vector<GeoCoord> routeTrace;
+    GeoCoord cur = c_end;
+    
+    while(!(cur.latitude == c_start.latitude && cur.longitude == c_start.longitude))
+    {
+        const GeoCoord* value = routeLinks.find(cur);
+        routeTrace.push_back(*value);
+        cur = *value;
+    }
+    
+    for(int k = routeTrace.size()-1; k>=0 ; k--)
+    {
+        GeoCoord start = 
+    }
+}
+
+//******************** Navigator functions ************************************
+
+// These functions simply delegate to NavigatorImpl's functions.
+// You probably don't want to change any of this code.
+
+Navigator::Navigator()
+{
+    m_impl = new NavigatorImpl;
+}
+
+Navigator::~Navigator()
+{
+    delete m_impl;
+}
+
+bool Navigator::loadMapData(string mapFile)
+{
+    return m_impl->loadMapData(mapFile);
+}
+
+NavResult Navigator::navigate(string start, string end, vector<NavSegment>& directions) const
+{
+    return m_impl->navigate(start, end, directions);
+}

@@ -1,0 +1,88 @@
+1a).
+                                50
+                            /        \
+                         20            60
+                      /      \            \
+                   10        40             70
+                     \       /             /   \
+                      15   30             65    80
+                          /  \     	          /
+                       25     35              75  
+
+b) Pre-order: 50 20 10 15 40 30 25 35 60 70 65 80 75
+   In-Order: 10 15 20 25 30 35 40 50 60 65 75 70 80
+   Post-order: 15 10 25 35 30 40 20 65 75 80 70 60 50 
+
+c)                              50
+                            /        \
+                         15            60
+                      /      \            \
+                   10        40             70
+                            /             /   \
+                          25             65    80
+                            \     	          /
+                             35              75 
+
+2.
+
+struct Node()
+{
+    Node* parent;
+    Node* left;
+    Node* right;
+    int value;
+};
+
+b)
+pass in a key and value
+-b
+	create new node with null left and right
+	if head is null or tree empty
+		set head to new node and parent to null
+	
+	set pointer to head
+	loop while ptr is not null
+		if key inserting and ptrs key equal
+			don’t insert and return or change value
+		if key is less ptr’s keys
+			if ptr’s left child is empty
+				insert with parent equal current ptr
+				return
+			else
+				set ptr to ptr left
+				continue
+		if key is greater than ptr’s key
+			if ptr’s right child is empty
+				insert with parent equal current ptr
+				return
+			else
+				set ptr to ptr right
+-e
+
+3.)
+
+a)              8         
+             /     \
+            3       6
+           / \     / 
+          0   2   4   
+
+b.) arr |8|3|6|0|2|4|
+arr[0] = 8
+arr[1] = 3
+arr[2] = 6
+arr[3] = 0
+arr[4] = 2
+arr[5] = 4
+c.) |6|3|4|0|2|
+
+4.)
+
+a)O(C + S)
+b)O(logC + S)
+c)O(logC + logS)
+d)O(logS)
+e)O(1)
+f)O(logC + S)
+g)O(SlogS)
+h)O(C*logS)

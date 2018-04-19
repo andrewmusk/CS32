@@ -1,0 +1,16 @@
+March 5th, 2017
+Homework 4
+
+2a) The one argument form of sequence<complex> fails because in the function in the for loop, it compares the value passed as parameter to another using the < operator. However, the < operator was not defined for an object of type Complex so the compiler has no idea how to compare two objects of type Complex
+
+3b) You can only do the method in 3a with two parameters as when you call the function again using recursion, you need to make the menu being processed smaller(break it down) and you need to pass the file path names from higher up in the directory/function. Thus you need 2 parameters otherwise you could only print the name of each menu item
+
+4a) The time complexity of this program is O(N^3). This is because you are running a 3 level nested loop, so you would have N^3 iterations. 
+
+4b) The time complexity of this would be O(N^3) as in the worst case scenario when I = N then we will have the same number of iterations as we would in 4a in that section of the loop. 
+
+5a) The time complexity of this is O(n^2). This is the case as in the first loop, we run to a max of n and in that loop we call get which is also a max of n which results in a total of n^2. The program does this again below a second time but 2n^2 is a big o of O(n^2) 
+
+5b) This function will have a big O of O(N). This is the case as the first loop will run to a maximum of N times and the insertBefore has a big O of O(1). The second loop will also take N time as a maximum which doesn’t change the big O then. The swap would also take a maximum of N iterations which doesn’t change the big O and so the big O is O(N)
+
+ 
